@@ -35,21 +35,15 @@
         </div>
         <div class="list_content">
             <a-spin loading v-show="loading" style="left:50%" />
-            <div v-show="!loading" v-for="(item, i) in data" :key="i">
-                <div class="list_title"><icon-bytedance-color /><span class="text">{{ item.title }}</span></div>
-                <MgShowData :data="item.list">
+            <div v-show="!loading" style="margin-top: 20px;">
+                <MgShowData :data="data">
                     <template v-slot:two='user'>
-                        <div class="tip" v-show="user.user.key == 'ml_dcl'"> 
-                            <p>{{ user.user.practice1 }}</p>
-                            <p>{{ user.user.practice2 }}</p>
-                        </div>
-                        <div class="tip" v-show="user.user.key == 'sshje_dcl'"> 
-                            <p>{{ user.user.practice1 }}</p>
+                        <div class="tip">
+                            <p>{{ user.user.practice1 ? user.user.practice1 : '--' }}</p>
                             <p>{{ user.user.practice2 }}</p>
                         </div>
                     </template>
                 </MgShowData>
-
             </div>
         </div>
     </div>
@@ -72,71 +66,38 @@ const loading = ref(false)
 const fieldNames = { value: 'busno', label: 'orgname' }
 const options = ref<any>([])
 // 定义接收字段
-const data = reactive([
-    {
-        title: '经营状况-毛利额',
-        list: [{
-            key: 'ml_dcl', title: '日清毛利额达成率（考核）', isPercent: true, number: '', isHundred: true,practice1: '',practice2: '', isShow:true
-        }, {
-            key: 'keliu', title: '当天客流', isPercent: false, number: '', isHundred: false, isShow:true
-        }, {
-            key: 'kedan', title: '当天客单', isPercent: false, number: '', isHundred: false, shouTipData: '', isShow:true
-        }, {
-            key: 'mll', title: '毛利率', isPercent: true, number: '', isHundred: false, shouTipData: '', isShow:true
-        }, {
-            key: 'jdyoyml', title: '毛利额同比', isPercent: true, number: '', isHundred: false, shouTipData: '', isShow:true
-        }, {
-            key: 'keliutb', title: '当天客流同比', isPercent: false, number: '', isHundred: false, shouTipData: '', isShow:false
-        }, {
-            key: 'kedantb', title: '当天客单同比', isPercent: false, number: '', isHundred: false, shouTipData: '', isShow:false
-        }, {
-            key: 'yoymll', title: '毛利率同比', isPercent: true, number: '', isHundred: false, shouTipData: '', isShow:false
-        }]
-    },
-    {
-        title: '经营状况-销售额',
-        list: [{
-            key: 'sshje_dcl', title: '日清销售额达成率（考核）', isPercent: true, number: '', isHundred: true, shouTipData: 'ssjh',practice1: '',practice2: '', isShow:true
-        },
-        // {
-        // {,isHundred: false
-        //     key:'',title: '价格竞争指数', isPercent: false, number: '3434'
-        // },
-        {
-            key: 'cxrkedan', title: '促销日客单价', isPercent: false, number: '', isHundred: false, shouTipData: '', isShow:true
-        },
-        {
-            key: 'ypdkeliu_zb', title: '一品单客流占比', isPercent: true, number: '', isHundred: false, shouTipData: '', isShow:true
-        }, {
-            key: 'yxpzsshje_zb', title: '营销品种占比', isPercent: true, number: '', isHundred: false, shouTipData: '', isShow:true
-        }, {
-            key: 'jdyoysshje', title: '销售额同比', isPercent: true, number: '', isHundred: false, shouTipData: '', isShow:true
-        }]
-    },
-    {
-        title: '经营状况-毛利率',
-        list: [
-        //     {
-        //     key: 'jdyoyml', title: '毛利额同比', isPercent: true, number: '', isHundred: false, shouTipData: ''
-        // }, 
-        {
-            key: 'jdyoykedan', title: '客单同比', isPercent: true, number: '', isHundred: false, shouTipData: ''
-        }, {
-            key: 'yoymll', title: '实际毛利率同比', isPercent: true, number: '', isHundred: false, shouTipData: ''
-        },
-        //  {
-        //     key:'',title: '门店SKU满足率', isPercent: false, number: '3434',isHundred: false
-        // }, {
-        //     key:'',title: '会员复购率', isPercent: false, number: '3434',isHundred: false
-        // },
-        {
-            key: 'hg_sshje_zb', title: '换购销售额占比', isPercent: true, number: '', isHundred: false, shouTipData: '',
-        }, {
-            key: 'puyao_mll', title: '普药毛利率', isPercent: true, number: '', isHundred: false, shouTipData: ''
-        }, {
-            key: 'yxpz_mll', title: '营销品种的毛利率', isPercent: true, number: '', isHundred: false, shouTipData: ''
-        }]
-    }
+const data = reactive([{
+    key: 'ml_dcl', title: '日清毛利额达成率（考核）', isPercent: true, number: '', isHundred: true, practice1: '', practice2: '', isShow: true
+}, 
+{
+    key: 'ml', title: '毛利额', isPercent: false, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
+},
+{
+    key: 'keliu', title: '当天客流', isPercent: false, number: '', isHundred: false, isShow: true
+}, {
+    key: 'kedan', title: '当天客单', isPercent: false, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
+},{
+    key: 'sshje_dcl', title: '日清销售额达成率（考核）', isPercent: true, number: '', isHundred: true, shouTipData: 'ssjh', practice1: '', practice2: '', isShow: true
+},
+{
+    key: 'xse', title: '销售额', isPercent: false, number: '', isHundred: false, shouTipData: '', isShow: true
+},
+
+ {
+    key: 'mll', title: '毛利率', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
+}, 
+ {
+    key: 'yxpz_mll', title: '营销品种毛利率', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
+},
+ {
+    key: 'puyao_mll', title: '普药毛利率', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
+},
+{
+    key: 'cxrkedan', title: '促销日客单价', isPercent: false, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
+},
+{
+    key: 'ypdkeliu_zb', title: '一品单客流占比', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
+}, 
 ])
 // 获取门店数据
 const getMDData = () => {
@@ -182,20 +143,36 @@ const getListsData = () => {
     }).then(res => {
         let datas = res.data
         for (let i in datas) {
-            data.forEach((item: any) => {
-                item.list.forEach((n: any) => {
-                    if (n.key == i) {
-                        if(n.key === 'ml_dcl') {
-                            n.practice1 = `毛利额：${datas.ml}`
-                            n.practice2 = `任务毛利额：${datas.rw_ml}`
-                        }
-                        if(n.key === 'sshje_dcl') {
-                            n.practice1 = `销售额：${datas.xse}`
-                            n.practice2 = `任务销售额：${datas.rw_xse}`
-                        }
-                        n.number = datas[i]
+            data.forEach((n: any) => {
+                if (n.key == i) {
+                    if (n.key === 'ml_dcl') {
+                        n.practice1 =datas.rw_ml? `任务毛利额：${datas.rw_ml}`:'--'
                     }
-                });
+                    if (n.key === 'ml') {
+                        n.practice1 = datas.jdyoyml?`同比：${datas.jdyoyml}%`:'--'
+                    }
+                    if (n.key === 'sshje_dcl') {
+                        n.practice1 = datas.rw_xse?`任务销售额：${datas.rw_xse}`: '--'
+                    }
+                    if (n.key === 'xse') {
+                        n.practice1 = `同比：${datas.jdyoysshje}%`
+                        n.practice2 = datas.hg_sshje_zb?`换购销售额占比：${datas.hg_sshje_zb}%`:'--'
+                    }
+                    if (n.key === 'keliu') {
+                        n.practice1 = datas.keliutb?`同比：${datas.keliutb}%`: '--'
+                    }
+                    if (n.key === 'kedan') {
+                        n.practice1 = datas.kedantb?`当天客单同比：${datas.kedantb}%`: '--'
+                        n.practice2 = datas.jdyoykedan?`客单同比：${datas.jdyoykedan}%`: '--'
+                    }
+                    if (n.key === 'mll') {
+                        n.practice1 = datas.yoymll?`同比：${datas.yoymll}%`: '--'
+                    }
+                    if (n.key === 'yxpz_mll') {
+                        n.practice1 = datas.yxpzsshje_zb?`占比：${datas.yxpzsshje_zb}%`: '--'
+                    }
+                    n.number = datas[i]
+                }
             });
         }
     }).finally(() => {
@@ -225,7 +202,8 @@ onMounted(() => {
 </script>
 <style lang="less" scoped>
 @import './day_month.less';
-.tip p{
+
+.tip p {
     margin: 0;
 }
 </style>

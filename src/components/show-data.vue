@@ -12,7 +12,7 @@
                     <slot name="two" :user='item'></slot>
                 </div>
                
-            <!-- <a-divider /> -->
+            <a-divider />
         </div>
     </div>
 </template>
@@ -39,7 +39,7 @@ const props = defineProps({
     font-size: 14px;
 }
 .item-flex {
-    width: calc(calc(100% - 200px) / 5);
+    width: calc(calc(100% - 160px) / 4);
     // min-width: 300px;
     // height: 100px;
     font-size: 18px;
