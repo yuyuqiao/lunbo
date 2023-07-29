@@ -4,9 +4,9 @@
     <Breadcrumb :items="['仪表盘', '公告列表']" />
     <div class="monitor-box">
       <SearchModel @search="search" />
-      <a-space direction="vertical" fill><a-button  type="primary" class="" @click="add_edit(null, 'add')"><template #icon>
-        <icon-plus />
-      </template>新增</a-button>
+      <a-space direction="vertical" fill><a-button type="primary" class="" @click="add_edit(null, 'add')"><template #icon>
+            <icon-plus />
+          </template>新增</a-button>
         <a-table :columns="columns" :data="data">
           <template #action="{ record }">
             <a-space>
@@ -15,25 +15,27 @@
               <a-button @click="add_edit(record, 'view')">view</a-button></a-space>
           </template>
         </a-table>
-        <a-table :columns="columns" :data="data" :scroll="scroll" :bordered="{ cell: true }" @change="handleChange" column-resizable
-          :draggable="{ type: 'handle', width: 40 }" @select="handSelectRow" :row-selection="rowSelection" row-key="name"
-          :expandable="expand">
+        <a-table :columns="columns" :data="data" :scroll="scroll" :bordered="{ cell: true }" @change="handleChange"
+          column-resizable :draggable="{ type: 'handle', width: 40 }" @select="handSelectRow"
+          :row-selection="rowSelection" row-key="name" :expandable="expand">
           <template #action="{ record }">
             <a-button @click="add_edit(record, 'view')">view</a-button>
           </template>
         </a-table></a-space>
+
+      <div ref="main" style="width: 100%; height: 400px"></div>
     </div>
     <!-- 新增删除 -->
-    <AddModel :isShowAddOrEdit="isShowAddOrEdit" :form="formInfor" :type="type" @close="close"
-      @addOrEdit="submitInfor" />
+    <AddModel :isShowAddOrEdit="isShowAddOrEdit" :form="formInfor" :type="type" @close="close" @addOrEdit="submitInfor" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import SearchModel from "./components/search-model.vue"
 import AddModel from "./components/add-model.vue"
 import { number } from 'echarts';
+import BarGraph from "./barGraph.vue";
 const isShowAddOrEdit = ref<boolean | undefined>(false)
 const formInfor = ref<object | undefined>()
 const type = ref()
@@ -47,9 +49,9 @@ const expand = reactive({
 })
 // 滚动设置
 const scroll = {
-      x: 2000,
-      y: 200
-    }
+  x: 2000,
+  y: 200
+}
 // 选择框
 const rowSelection: any = {
   type: 'radio'
@@ -78,7 +80,7 @@ const columns = reactive<any>([
   {
     title: '电话', dataIndex: 'tel'
   },
-  { title: '操作', fixed: 'right',slotName: 'action' }
+  { title: '操作', fixed: 'right', slotName: 'action' }
 ])
 // 数据
 const data = ref([{
@@ -136,9 +138,91 @@ const close = () => {
   isShowAddOrEdit.value = false
 }
 // 根据条件搜索
-const search = (val:any)=>{
+const search = (val: any) => {
   console.log('搜索', val)
 }
+
+
+import * as echarts from "echarts";
+const main = ref(); // 使用ref创建虚拟DOM引用，使用时用main.value
+onMounted(() => {
+  init();
+})
+// 图表初始化
+
+function init() {
+  // 基于准备好的dom，初始化echarts实例
+  const myChart = echarts.init(main.value);
+  const schoolData = [
+    {
+      name: '张三',
+      value: 4253
+    },
+    {
+      name: '李四',
+      value: 5691
+    },
+    {
+      name: '王五',
+      value: 4536
+    },
+    {
+      name: '赵六',
+      value: 4369
+    },
+    {
+      name: '周七',
+      value: 5124
+    }]
+  // 指定图表的配置项和数据
+  const option:any = {
+    title: {
+      text: '个人存款',
+      left: 'center'
+    },
+    tooltip: {
+      trigger: 'item',
+      formatter: '<br/>{b} : {c} ({d}%)'
+    },
+    legend: {
+      orient: 'vertical',
+      left: 'left',
+      data: []
+    },
+    series: [
+      {
+        type: 'pie',
+        radius: '55%',
+        center: ['50%', '60%'],
+        data: [{ value: 335, name: '' }]
+      }
+    ]
+  };
+  // 赋值
+  option.series = [
+    {
+      type: 'pie',
+      radius: '55%',
+      center: ['50%', '60%'],
+      // data: res.data.map((v) => {
+      //   return { name: v.name, value: v.value }
+      // })
+      data: schoolData,
+    }
+  ]
+  // 赋值
+  // option.legend = [
+  //   {
+  //    data: schoolData.map((a) => a.name)
+  //   }
+  // ]
+  // 赋值
+  option.legend.data = schoolData.map((a) => a.name)
+
+  // 使用刚指定的配置项和数据显示图表。
+  myChart.setOption(option);
+}
+
 </script>
 <style lnag="less" scoped>
 .monitor-box {

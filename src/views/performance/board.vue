@@ -13,9 +13,9 @@
                     <!-- <div class="text">正在努力开发中...</div> -->
                     <MgMonthModule />
                 </a-tab-pane>
-                <!-- <a-tab-pane key="3" title="年">
+                <a-tab-pane key="3" title="年">
                     <MgYearModule />
-                </a-tab-pane> -->
+                </a-tab-pane>
             </a-tabs>
         </div>
     </div>

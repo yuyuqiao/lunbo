@@ -4,21 +4,21 @@
     <div class="search_list">
       <a-form ref="formRef" :model="form" @submit="submit">
         <a-row class="grid-demo" :gutter="{ md: 8, lg: 24, xl: 32 }">
-          <a-col :span="10">
+          <a-col :span="4">
             <a-form-item field="busno" label="年份">
               <a-year-picker v-model="form.year" style="width: 100%;" />
             </a-form-item>
           </a-col>
-          <a-col :span="10">
+          <a-col :span="6">
             <a-form-item field="busno" label="门店">
               <a-cascader style="width: 100%;" v-model="form.all" @change="change" :field-names="fieldNames" allow-search
                 :options="options" placeholder="请选择" />
             </a-form-item>
           </a-col>
-          <a-col :span="4" style="text-align: right;">
+          <a-col :span="14" style="text-align: right;">
             <div class="a-btn">
               <a-space>
-                <a-button long html-type="submit" type="primary">提交</a-button>
+                <a-button long html-type="submit" type="primary">查询</a-button>
               </a-space>
             </div>
           </a-col>
@@ -26,7 +26,10 @@
       </a-form>
     </div>
     <div class="list_content">
-      <a-table :columns="columns" :data="data" column-resizable :draggable="{ type: 'handle', width: 30 }" />
+      
+      <a-table :loading="loading"  :columns="columns" :data="data" column-resizable :virtual-list-props="tableHeight"
+        :pagination="false"  @change="handleChange" :draggable="{}" />
+        <!-- <a-spin loading v-show="loading" style="left:50%" />-->
     </div>
   </div>
 </template>
@@ -36,79 +39,77 @@ import { useStore } from "vuex";
 import { db } from "@/api/index";
 import dayjs from 'dayjs'
 let store = useStore()
+const loading = ref(false)
+let count = ref(0)
 const form = reactive({
-  year: '',
-  all: '',
+  year: dayjs().format('YYYY'),
+  all: '全部',
   busno: '',
   orgname: '',
+})
+let tableHeight = reactive({
+  height: 0
 })
 const fieldNames = { value: 'busno', label: 'orgname' }
 const options = ref<any>([])
 // 表头名 参数字段
 const columns = reactive<any>([
   {
-    title: '名称', dataIndex: 'name',
+    title: '名称', dataIndex: 'name',width: 200,
     sortable: { sortDirections: ['ascend', 'descend'] }
   },
   {
-    title: '一月', dataIndex: 'email', type: Number,
+    title: '一月', dataIndex: 'months1',
+    sortable: { sortDirections: ['ascend', 'descend'] },
+    bodyCellClass:(record:any)=>{	
+      if(record.name == '日均毛利额达成率'){
+        let className = record.months1 >100 ? 'rise': 'decline';
+         return className
+      }
+    }
+  },
+  {
+    title: '二月', dataIndex: 'months2',
     sortable: { sortDirections: ['ascend', 'descend'] }
   },
   {
-    title: '二月', dataIndex: 'address',
-    sortable: { sortDirections: ['ascend', 'descend'] }
-  },
-  {
-    title: '三月', dataIndex: 'address',
+    title: '三月', dataIndex: 'months3',
     sortable: { sortDirections: ['ascend', 'descend'] }
   }, {
-    title: '四月', dataIndex: 'address',
+    title: '四月', dataIndex: 'months4',
     sortable: { sortDirections: ['ascend', 'descend'] }
   }, {
-    title: '五月', dataIndex: 'address',
+    title: '五月', dataIndex: 'months5',
     sortable: { sortDirections: ['ascend', 'descend'] }
   }, {
-    title: '六月', dataIndex: 'address',
+    title: '六月', dataIndex: 'months6',
     sortable: { sortDirections: ['ascend', 'descend'] }
   }, {
-    title: '七月', dataIndex: 'address',
+    title: '七月', dataIndex: 'months7',
     sortable: { sortDirections: ['ascend', 'descend'] }
   }, {
-    title: '八月', dataIndex: 'address',
+    title: '八月', dataIndex: 'months8',
     sortable: { sortDirections: ['ascend', 'descend'] }
   }, {
-    title: '九月', dataIndex: 'address',
+    title: '九月', dataIndex: 'months9',
     sortable: { sortDirections: ['ascend', 'descend'] }
   }, {
-    title: '十月', dataIndex: 'address',
+    title: '十月', dataIndex: 'months10',
     sortable: { sortDirections: ['ascend', 'descend'] }
   }, {
-    title: '十一月', dataIndex: 'address',
+    title: '十一月', dataIndex: 'months11',
     sortable: { sortDirections: ['ascend', 'descend'] }
   }, {
-    title: '十二月', dataIndex: 'address',
+    title: '十二月', dataIndex: 'months12',
     sortable: { sortDirections: ['ascend', 'descend'] }
   },
 ])
 // 数据
-const data = ref([{
-  key: '1', name: '大卫', email: '45', address: '大沙田公平街', detail: '今天的天气，早上大暴雨，过后大晴天,总之是一个美妙的天空', hobby: '打羽毛球', tel: '12345678987',
-  expand: '收缩的数据，隐藏的数据，是否展示该数据'
-}, {
-  key: '2', name: '凡尔纳', email: '67.8', address: '大沙田公平街', detail: '今天的天气，早上大暴雨，过后大晴天,总之是一个美妙的天空', hobby: '打羽毛球', tel: '12345678987',
-  expand: '收缩的数据，隐藏的数据，是否展示该数据'
+let data = ref<any>([])
+  const handleChange = (_data: any) => {
+  data = _data
 }
-  , {
-  key: '3', name: '保罗', email: '23', address: '大沙田公平街', detail: '今天的天气，早上大暴雨，过后大晴天,总之是一个美妙的天空', hobby: '打羽毛球', tel: '12345678987'
-}, {
-  key: '4', name: '戴维', email: '576', address: '大沙田公平街', detail: '今天的天气，早上大暴雨，过后大晴天,总之是一个美妙的天空', hobby: '打羽毛球', tel: '12345678987'
-}, {
-  key: '5', name: '老舍', email: '1', address: '大沙田公平街', detail: '今天的天气，早上大暴雨，过后大晴天,总之是一个美妙的天空', hobby: '打羽毛球', tel: '12345678987'
-}, {
-  key: '6', name: '鲁迅', email: '5', address: '大沙田公平街', detail: '今天的天气，早上大暴雨，过后大晴天,总之是一个美妙的天空', hobby: '打羽毛球', tel: '12345678987'
-}, {
-  key: '7', name: '马克思', email: '2', address: '大沙田公平街', detail: '今天的天气，早上大暴雨，过后大晴天,总之是一个美妙的天空', hobby: '打羽毛球', tel: '12345678987'
-}])
+//获取门店数据
 const getMDData = () => {
   db({
     gnbh: "pc_huoqupqmd",
@@ -148,60 +149,71 @@ const change = (val: any) => {
   }
 
 }
+// 获取列表数据
+const getListsData = () => {
+  console.log(count.value, 'count')
+  if (count.value == 0) loading.value = true
+  db({
+    gnbh: "pc_hqnsjzx",
+    dzyid: store.state.user?.userinfor?.dzyid,
+    orgid: store.state.user?.userinfor?.orgid,
+    token: store.state.user?.userinfor?.token,
+    erpid: store.state.user?.userinfor?.erpid,
+    year: dayjs(form.year).format('YYYY'),
+    orgname: form.orgname,
+    busno: form.busno,
+    type: count.value
+  }).then(res => {
+    let datas = res.data
+       for(let j in datas){
+          if(j !=='name') {
+            let num = parseFloat(datas[j])
+            datas[j] = num
+          }
+     }
+    data.value.push(datas)
+    if (count.value < 43) {
+      count.value = count.value + 1
+      getListsData()
+    }
+  }).finally(() => {
+    if (count.value == 1) loading.value = false
+  })
+}
+// }
 const submit = () => {
-  console.log('提交信息', form)
+  data.value = []
+  count.value = 0
+  getListsData()
 }
 onMounted(() => {
+  tableHeight.height = window.innerHeight - 370
   getMDData()
+  getListsData()
 })
 </script>
 <style lang="less" scoped>
-.rise {
+@import './day_month.less';
+:deep(.rise ){
   color: green;
 }
 
-.decline {
+:deep(.decline) {
   color: red;
 }
-
 .search_list {
-  padding: 0 20px;
-
-  :deep(.arco-form-item-label-col) {
-    justify-content: flex-start;
-    width: 100%;
-    flex: 0 0 60px;
-  }
-
-  :deep(.arco-form-item-wrapper-col) {
-    width: 100%;
-    flex: 0 0 calc(100% - 60px);
-  }
-
-  .a-btn {}
-}
-
-.list_content {
-  padding: 0 20px 20px 20px;
-
-  .item-flex {
-    width: calc(calc(100% - 160px) / 4);
-    min-width: 300px;
-    height: 100px;
-    font-size: 18px;
-    padding: 0 20px;
-    margin-bottom: 10px;
-
-    span {
-      display: inline-block;
-      margin: 10px 0 0 10px;
-      font-size: 26px;
-      font-weight: bolder;
+    :deep(.arco-form-item-label-col) {
+        // justify-content: flex-start;
+        width: 100%;
+        flex: 0 0 60px;
     }
 
-    // &:nth-last-of-type(4n) {
-    //     padding-right: 0;
-    // }
-  }
+    :deep(.arco-form-item-wrapper-col) {
+        width: 100%;
+        flex: 0 0 calc(100% - 60px);
+    }
+}
+.list_content {
+  padding: 0 20px 20px 20px;
 }
 </style>

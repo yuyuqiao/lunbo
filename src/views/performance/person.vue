@@ -1,44 +1,42 @@
-<!-- 月份 -->
+<!-- 个人 -->
 <template>
-    <!--  -->
-    <div class="content_day">
-        <div class="search_list">
-            <a-form ref="formRef" :model="form" @submit="getAllToker">
-                <a-row class="grid-demo" :gutter="{ md: 8, lg: 24, xl: 32 }">
-                    <a-col :span="4">
-                        <a-form-item field="busno" label="月份">
-                            <a-month-picker style="width: 100%;" :defaultValue="defaultMoonth" placeholder="请选择月份"
-                                v-model="form.month" />
-                        </a-form-item>
-                    </a-col>
-                    <a-col :span="6">
-                        <a-form-item field="busno" label="门店">
-                            <a-cascader style="width: 100%;" v-model="form.all" @change="change" :field-names="fieldNames"
-                                allow-search :options="options" placeholder="请选择" />
-                        </a-form-item>
-                    </a-col>
+    <div class="container">
+        <Breadcrumb :items="['业绩看板', '门店经营状况']" />
+        <div class=" store-board">
+            <div class="content_day">
+                <div class="search_list">
+                    <a-form ref="formRef" :model="form">
+                        <a-row class="grid-demo" :gutter="{ md: 8, lg: 24, xl: 32 }">
+                            <a-col :span="4">
+                                <a-form-item field="busno" label="月份">
+                                    <a-month-picker style="width: 100%;" :defaultValue="defaultMoonth" placeholder="请选择月份"
+                                        v-model="form.month" />
+                                </a-form-item>
+                            </a-col>
 
-                    <a-col :span="14" style="text-align: right;">
-                        <div class="a-btn">
-                            <a-space>
-                                <a-button long html-type="getAllToker" type="primary">查询</a-button>
-                            </a-space>
-                        </div>
-                    </a-col>
-                </a-row>
-            </a-form>
-        </div>
-        <div class="list_content">
-            <a-spin loading v-show="loading" style="left:50%" />
-            <div v-show="!loading">
-                <MgShowData :data="data">
-                    <template v-slot:two='user'>
-                        <div class="tip">
-                            <p>{{ user.user.practice1 }}</p>
-                            <p>{{ user.user.practice2 }}</p>
-                        </div>
-                    </template>
-                </MgShowData>
+                            <a-col :span="20" style="text-align: right;">
+                                <div class="a-btn">
+                                    <a-space>
+                                        <a-button long html-type="getAllToker" type="primary">查询</a-button>
+                                    </a-space>
+                                </div>
+                            </a-col>
+                        </a-row>
+                    </a-form>
+                </div>
+                <div class="list_content">
+                    <a-spin loading v-show="loading" style="left:50%" />
+                    <div v-show="!loading">
+                        <MgShowData :data="data">
+                            <template v-slot:two='user'>
+                                <div class="tip">
+                                    <p>{{ user.user.practice1 }}</p>
+                                    <p>{{ user.user.practice2 }}</p>
+                                </div>
+                            </template>
+                        </MgShowData>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -54,7 +52,7 @@ const form = reactive<any>({
     busno: '',
     orgname: '',
     all: '全部',
-    leibie: '按全部',
+    leibie: '按个人',
     month: dayjs().format('YYYY-MM')
 })
 const defaultMoonth = dayjs().format('YYYY-MM')
@@ -71,7 +69,7 @@ const data = reactive(
         }, {
             key: 'yxxse', title: '营销销售额', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
         }, {
-            key: 'bjpxse', title: '保健品售额', isPercent: false, number: '', isHundred: false,  isShow: true
+            key: 'bjpxse', title: '保健品售额', isPercent: false, number: '', isHundred: false, isShow: true
         }, {
             key: 'zyypxse', title: '中药饮片售额', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
         }, {
@@ -97,63 +95,12 @@ const data = reactive(
             key: 'zonghyxse', title: '总会员销售额', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
         }
     ])
-// 获取门店数据
-const getMDData = () => {
-    db({
-        gnbh: "pc_huoqupqmd",
-        dzyid: store.state.user?.userinfor?.dzyid,
-        orgid: store.state.user?.userinfor?.orgid,
-        busno: store.state.user?.userinfor?.busno,
-        token: store.state.user?.userinfor?.token,
-        erpid: store.state.user?.userinfor?.erpid
-    }).then(res => {
-        let pq_arr = [{ busno: '-1', orgname: '全部' }]
-        res.data.forEach((item: any) => {
-            let md_arr = [{ busno: item.orgname, orgname: '全部' }]
-            item.subordinate.forEach((n: any) => {
-                md_arr.push(n)
-            });
-
-            let obj = {
-                busno: item.orgname,
-                orgname: item.orgname,
-                children: md_arr
-            }
-            pq_arr.push(obj)
-        });
-        options.value = [...pq_arr]
-    })
-
-}
-// 判断是门店还是片区
-const change = (val: any) => {
-    form.orgname = form.busno = ''
-    if (val == '-1') {
-        form.leibie = '按全部'
-        return
-    }
-    let pattern = new RegExp("[\u4E00-\u9FA5]+");
-    if (pattern.test(val)) {
-        form.leibie = '按片区'
-        form.orgname = val
-    } else {
-        form.leibie = '按机构'
-        form.busno = val
-    }
-
-}
-
 // 获取拓客信息
-const getAllToker = () => {
-    getTokerData("get.org.shujucenter_yuefen_oa", data)
-    // getTokerData("get.org.huiyuantuoke2", data)
-    // getTokerData('get.org.huiyuantuoke', data)
-}
-const getTokerData = (gnbh: any, list: any) => {
+const getTokerData = () => {
     reset()
     loading.value = true
     db({
-        gnbh: gnbh,
+        gnbh: 'get.org.shujucenter_yuefen_oa',
         dzyid: store.state.user?.userinfor?.dzyid,
         orgid: store.state.user?.userinfor?.orgid,
         token: store.state.user?.userinfor?.token,
@@ -163,9 +110,9 @@ const getTokerData = (gnbh: any, list: any) => {
         busno: form.busno,
         leibie: form.leibie
     }).then(res => {
-        let datas = res.data?res.data[0]:{}
+        let datas = res.data ? res.data[0] : {}
         for (let i in datas) {
-            list.forEach((n: any) => {
+            data.forEach((n: any) => {
                 if (n.key == i) {
                     if (n.key === 'zonghyfugourenshu') {
                         // 总会员复购人数
@@ -198,30 +145,36 @@ const getTokerData = (gnbh: any, list: any) => {
                         n.practice1 = datas.puyaoxse_zb ? `占比：${datas.puyaoxse_zb}%` : '--'
                         n.practice2 = datas.puyaokeliu ? `交易笔数：${datas.puyaokeliu}` : '--'
                     }
-                    if(n.key == 'zonghyxse')  n.practice1 = datas.zonghyxse_zb ? `占比：${datas.zonghyxse_zb}%` : '--'
+                    if (n.key == 'zonghyxse') n.practice1 = datas.zonghyxse_zb ? `占比：${datas.zonghyxse_zb}%` : '--'
                     n.number = datas[i]
                 }
             });
         }
-    }).finally(()=>{
+    }).finally(() => {
         loading.value = false
     })
 }
 // 重置信息
 const reset = () => {
-    data.forEach((n: any) =>{
+    data.forEach((n: any) => {
         n.number = ''
         n.practice1 = ''
-        n.practice2= ''
+        n.practice2 = ''
     })
 }
 onMounted(() => {
-    getMDData()
-    getAllToker()
+    getTokerData()
 })
 </script>
 <style lang="less" scoped>
-@import './day_month.less';
+@import './components/day_month.less';
+
+.store-board {
+    background-color: #fff;
+    border-radius: 4px;
+    padding:  20px 0;
+}
+
 .search_list {
     :deep(.arco-form-item-label-col) {
         // justify-content: flex-start;
@@ -233,5 +186,8 @@ onMounted(() => {
         width: 100%;
         flex: 0 0 calc(100% - 60px);
     }
+}
+:deep(.item-flex) {
+    border: 1px solid red;
 }
 </style>

@@ -2,7 +2,7 @@
     <div class="login-form-wrapper">
         <div class="login-form-box">
             <div class="login-form-title">OA后台管理系统</div>
-           
+
             <div class="login-form-error-msg"></div>
             <a-form ref="loginForm" :model="userInfor" class="login-form" @submit="handleSubmit">
                 <a-form-item label="用户名" field="username" :rules="[{ required: true, message: '请填写用户名' }]"
@@ -28,6 +28,17 @@
     display: none;
 }
 
+:deep(.arco-form-item-label-col) {
+    justify-content: flex-start;
+    width: 100%;
+    flex: 0 0 100%;
+}
+
+:deep(.arco-form-item-wrapper-col) {
+    width: 100%;
+    flex: 0 0 100%;
+}
+
 .login-form-wrapper {
     display: flex;
     justify-content: center;
@@ -37,7 +48,7 @@
 }
 
 .login-form-box {
-    width: 500px;
+    width: 400px;
     height: auto;
     background-color: #fff;
     padding: 20px;
@@ -78,9 +89,9 @@ const handleSubmit = ({
             gnbh: 'login', dzyid: userInfor.username, pwd: userInfor.password
         }
         db(query).then(res => {
-            console.log(res,'login')
+            console.log(res, 'login')
 
-            sessionStorage.setItem('token',res.data[0]?.token)
+            sessionStorage.setItem('token', res.data[0]?.token)
             store.commit('user/setUser', res.data[0])
             setTimeout(() => {
                 router.push({ name: 'storeMaskBoard' });

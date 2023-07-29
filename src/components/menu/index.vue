@@ -96,7 +96,14 @@ export default defineComponent({
                                 title: '门店经营状况',
                                 requiresAuth: true,
                             },
-                        }
+                        }, {
+                            path: 'person',
+                            name: 'person',
+                            meta: {
+                                title: '个人状况',
+                                requiresAuth: true,
+                            },
+                        },
                     ],
                 }
             ]

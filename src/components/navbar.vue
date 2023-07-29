@@ -3,7 +3,7 @@
     <!-- 放置logo -->
     <div class="left-side">
       <img alt="logo" class="logo"
-        src="../assets/favicon.ico" />
+        src="../assets/logo.png" />
     </div>
     <!-- 个人头像 -->
     <div class="right-side">

@@ -14,14 +14,6 @@ export default {
     avatar: undefined,
     token: undefined
   }),
-  // state () {
-  //   return {
-  //     // 用户信息
-  //     userinfor: {
-  //       token:''
-  //     }
-  //   }
-  // },
   mutations: {
     // 修改用户信息
     setUser(state: any, payload: any) {

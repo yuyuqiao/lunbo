@@ -28,6 +28,14 @@ const PERFORMANCE = {
         title: '门店经营状况',
         requiresAuth: true,
       },
+    },{
+      path: 'person',
+      name: 'person',
+      component: () => import('@/views/performance/person.vue'),
+      meta: {
+        title: '个人状况',
+        requiresAuth: true,
+      },
     },
   ],
 };

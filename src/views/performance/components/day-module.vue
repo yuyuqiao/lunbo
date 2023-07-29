@@ -2,31 +2,39 @@
 <template>
     <div class="content_day">
         <div class="search_list">
-            <a-form ref="formRef" :model="form" @submit="submit">
+            <a-form ref="formRef" :model="form" @submit="getListsData">
                 <a-row class="grid-demo" :gutter="{ md: 8, lg: 24, xl: 32 }">
-                    <a-col :span="12">
-                        <a-form-item field="busno" label="日期">
-                            <a-range-picker :allow-clear="false" style="width: 100%;" v-model="form.date"
-                                format="YYYY-MM-DD" />
+                    <a-col :span="4">
+                        <a-form-item field="busno" label="开始日期">
+                            <a-date-picker v-model="form.startTime" format="YYYY-MM-DD" style="width: 100%;" />
                         </a-form-item>
                     </a-col>
-                    <a-col :span="12">
-                        <a-form-item field="date" label="同比日期">
-                            <a-range-picker :allow-clear="false" style="width: 100%;" v-model="form.tb_date"
-                                format="YYYY-MM-DD" />
+                    <a-col :span="4">
+                        <a-form-item field="busno" label="结束日期">
+                            <a-date-picker v-model="form.endTIme" format="YYYY-MM-DD" style="width: 100%;" />
                         </a-form-item>
                     </a-col>
-                    <a-col :span="12">
-                        <a-form-item field="all" label="门店">
+                    <a-col :span="4">
+                        <a-form-item field="date" label="同比开始日期">
+                            <a-date-picker v-model="form.tbstartTime" format="YYYY-MM-DD" style="width: 100%;" />
+                        </a-form-item>
+                    </a-col>
+                    <a-col :span="4">
+                        <a-form-item field="date" label="同比结束日期">
+                            <a-date-picker v-model="form.tbendTIme" format="YYYY-MM-DD" style="width: 100%;" />
+                        </a-form-item>
+                    </a-col>
+                    <a-col :span="6">
+                        <a-form-item field="all" class="separate" label="门店">
                             <a-cascader style="width: 100%;" v-model="form.all" @change="change" :field-names="fieldNames"
                                 allow-search :options="options" placeholder="请选择" />
                         </a-form-item>
                     </a-col>
 
-                    <a-col :span="12" style="text-align: right;">
+                    <a-col :span="2" style="text-align: right;">
                         <div class="a-btn">
                             <a-space>
-                                <a-button long html-type="submit" type="primary">提交</a-button>
+                                <a-button long html-type="getListsData" type="primary">查询</a-button>
                             </a-space>
                         </div>
                     </a-col>
@@ -39,7 +47,7 @@
                 <MgShowData :data="data">
                     <template v-slot:two='user'>
                         <div class="tip">
-                            <p>{{ user.user.practice1 ? user.user.practice1 : '--' }}</p>
+                            <p>{{ user.user.practice1 }}</p>
                             <p>{{ user.user.practice2 }}</p>
                         </div>
                     </template>
@@ -53,12 +61,15 @@ import { onMounted, reactive, ref } from 'vue';
 import { useStore } from "vuex";
 import { db } from "@/api/index";
 import dayjs from 'dayjs'
+import { Message } from '@arco-design/web-vue'
 import MgShowData from '@/components/show-data.vue'
 let store = useStore()
 const form = reactive<any>({
     busno: '',
-    date: [new Date(), new Date()],
-    tb_date: [new Date(), new Date()],
+    startTime: dayjs().format('YYYY-MM-DD'),
+    endTIme: dayjs().format('YYYY-MM-DD'),
+    tbstartTime: dayjs().format('YYYY-MM-DD'),
+    tbendTIme: dayjs().format('YYYY-MM-DD'),
     orgname: '',
     all: '全部'
 })
@@ -67,8 +78,8 @@ const fieldNames = { value: 'busno', label: 'orgname' }
 const options = ref<any>([])
 // 定义接收字段
 const data = reactive([{
-    key: 'ml_dcl', title: '日清毛利额达成率（考核）', isPercent: true, number: '', isHundred: true, practice1: '', practice2: '', isShow: true
-}, 
+    key: 'ml_dcl', title: '日清毛利额达成率(考核)', isPercent: true, number: '', isHundred: true, practice1: '', practice2: '', isShow: true
+},
 {
     key: 'ml', title: '毛利额', isPercent: false, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
 },
@@ -76,28 +87,28 @@ const data = reactive([{
     key: 'keliu', title: '当天客流', isPercent: false, number: '', isHundred: false, isShow: true
 }, {
     key: 'kedan', title: '当天客单', isPercent: false, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
-},{
-    key: 'sshje_dcl', title: '日清销售额达成率（考核）', isPercent: true, number: '', isHundred: true, shouTipData: 'ssjh', practice1: '', practice2: '', isShow: true
+}, {
+    key: 'cxrkedan', title: '促销日客单价', isPercent: false, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
+}, {
+    key: 'sshje_dcl', title: '日清销售额达成率(考核)', isPercent: true, number: '', isHundred: true, shouTipData: 'ssjh', practice1: '', practice2: '', isShow: true
 },
 {
     key: 'xse', title: '销售额', isPercent: false, number: '', isHundred: false, shouTipData: '', isShow: true
 },
 
- {
+{
     key: 'mll', title: '毛利率', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
-}, 
- {
+},
+{
     key: 'yxpz_mll', title: '营销品种毛利率', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
 },
- {
+{
     key: 'puyao_mll', title: '普药毛利率', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
 },
-{
-    key: 'cxrkedan', title: '促销日客单价', isPercent: false, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
-},
+
 {
     key: 'ypdkeliu_zb', title: '一品单客流占比', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
-}, 
+},
 ])
 // 获取门店数据
 const getMDData = () => {
@@ -129,6 +140,15 @@ const getMDData = () => {
 }
 // 获取列表数据
 const getListsData = () => {
+    if (dayjs(form.startTime) > dayjs(form.endTIme)) {
+        Message.warning('开始时间不能大于结束时间')
+        return
+    }
+    if (dayjs(form.tbstartTime) > dayjs(form.tbendTIme)) {
+        Message.warning('同比- 开始时间不能大于结束时间')
+        return
+    }
+    reset()
     loading.value = true
     db({
         gnbh: "pc_jyzk",
@@ -136,8 +156,8 @@ const getListsData = () => {
         orgid: store.state.user?.userinfor?.orgid,
         token: store.state.user?.userinfor?.token,
         erpid: store.state.user?.userinfor?.erpid,
-        startTime: dayjs(form.date[0]).format('YYYY-MM-DD'), endTIme: dayjs(form.date[1]).format('YYYY-MM-DD'),
-        tbstartTime: dayjs(form.tb_date[0]).format('YYYY-MM-DD'), tbendTIme: dayjs(form.tb_date[1]).format('YYYY-MM-DD'),
+        startTime: form.startTime, endTIme: form.endTIme,
+        tbstartTime: form.tbstartTime, tbendTIme: form.tbendTIme,
         orgname: form.orgname,
         busno: form.busno,
     }).then(res => {
@@ -145,32 +165,35 @@ const getListsData = () => {
         for (let i in datas) {
             data.forEach((n: any) => {
                 if (n.key == i) {
-                    if (n.key === 'ml_dcl') {
-                        n.practice1 =datas.rw_ml? `任务毛利额：${datas.rw_ml}`:'--'
-                    }
-                    if (n.key === 'ml') {
-                        n.practice1 = datas.jdyoyml?`同比：${datas.jdyoyml}%`:'--'
-                    }
-                    if (n.key === 'sshje_dcl') {
-                        n.practice1 = datas.rw_xse?`任务销售额：${datas.rw_xse}`: '--'
-                    }
+                    if (n.key === 'ml_dcl')
+                        n.practice1 = datas.rw_ml ? `任务毛利额：${datas.rw_ml}` : '--'
+
+                    if (n.key === 'ml')
+                        n.practice1 = datas.jdyoyml ? `同比：${datas.jdyoyml}` : '--'
+
+                    if (n.key === 'sshje_dcl')
+                        n.practice1 = datas.rw_xse ? `任务销售额：${datas.rw_xse}` : '--'
+
                     if (n.key === 'xse') {
-                        n.practice1 = `同比：${datas.jdyoysshje}%`
-                        n.practice2 = datas.hg_sshje_zb?`换购销售额占比：${datas.hg_sshje_zb}%`:'--'
+                        n.practice1 = `同比：${datas.jdyoysshje}`
+                        n.practice2 = datas.hg_sshje_zb ? `换购销售额占比：${datas.hg_sshje_zb}` : '--'
                     }
-                    if (n.key === 'keliu') {
-                        n.practice1 = datas.keliutb?`同比：${datas.keliutb}%`: '--'
-                    }
+
+                    if (n.key === 'keliu')
+                        n.practice1 = datas.keliutb ? `同比：${datas.keliutb}` : '--'
+
                     if (n.key === 'kedan') {
-                        n.practice1 = datas.kedantb?`当天客单同比：${datas.kedantb}%`: '--'
-                        n.practice2 = datas.jdyoykedan?`客单同比：${datas.jdyoykedan}%`: '--'
+                        n.practice1 = datas.kedantb ? `当天客单同比：${datas.kedantb}` : '--'
+                        n.practice2 = datas.jdyoykedan ? `客单同比：${datas.jdyoykedan}` : '--'
                     }
-                    if (n.key === 'mll') {
-                        n.practice1 = datas.yoymll?`同比：${datas.yoymll}%`: '--'
-                    }
-                    if (n.key === 'yxpz_mll') {
-                        n.practice1 = datas.yxpzsshje_zb?`占比：${datas.yxpzsshje_zb}%`: '--'
-                    }
+
+                    if (n.key === 'mll')
+                        n.practice1 = datas.yoymll ? `同比：${datas.yoymll}` : '--'
+
+                    if (n.key === 'yxpz_mll')
+                        n.practice1 = datas.yxpzsshje_zb ? `占比：${datas.yxpzsshje_zb}` : '--'
+                    if (n.key === 'cxrkedan') n.practice1 = datas.cxrkedantb ? `同比：${datas.cxrkedantb}` : '--'
+                    if (n.key == 'puyao_mll') n.practice1 = datas.tbpuyao_mll ? `同比：${datas.tbpuyao_mll}` : '--'
                     n.number = datas[i]
                 }
             });
@@ -191,9 +214,13 @@ const change = (val: any) => {
     }
 
 }
-// 提交信息
-const submit = () => {
-    getListsData()
+// 重置信息
+const reset = () => {
+    data.forEach((n: any) => {
+        n.number = ''
+        n.practice1 = ''
+        n.practice2 = ''
+    })
 }
 onMounted(() => {
     getMDData()
@@ -202,8 +229,16 @@ onMounted(() => {
 </script>
 <style lang="less" scoped>
 @import './day_month.less';
+.search_list .separate{
+    :deep(.arco-form-item-label-col) {
+        // justify-content: flex-start;
+        width: 100%;
+        flex: 0 0 60px;
+    }
 
-.tip p {
-    margin: 0;
+    :deep(.arco-form-item-wrapper-col) {
+        width: 100%;
+        flex: 0 0 calc(100% - 60px);
+    }
 }
 </style>

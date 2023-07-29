@@ -3,10 +3,10 @@
         <div class="item-flex" v-for="(item, i) in data" :key="i">
             <div class="item_title">{{ item?.title }}</div>
             <span
-                :class="!item.isPercent ? '' : !item.number ? '' : Number(item.number) > (item.isHundred ? 100 : 0) ? 'rise' : 'decline'">{{
+                :class="!item.isPercent ? '' : !item.number ? '' : parseFloat(item.number) > (item.isHundred ? 100 : 0) ? 'rise' : 'decline'">{{
                     !item.number
                     ?
-                    '-' : item.isPercent ? item.number + '%' : item.number
+                    '-' : item.number
                 }}</span>
                 <div class="tip_number" v-show="item.isShow">
                     <slot name="two" :user='item'></slot>
@@ -39,7 +39,7 @@ const props = defineProps({
     font-size: 14px;
 }
 .item-flex {
-    width: calc(calc(100% - 160px) / 4);
+    width: calc(calc(100% - 200px) / 5);
     // min-width: 300px;
     // height: 100px;
     font-size: 18px;
@@ -56,4 +56,7 @@ const props = defineProps({
     :deep(.arco-divider-horizontal) {
         margin-top: 5px;
     }
-}</style>
+}
+@media (max-width: 1380px) {
+}
+</style>
