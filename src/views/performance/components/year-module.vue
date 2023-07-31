@@ -2,45 +2,39 @@
 <template>
   <div class="content_year">
     <div class="search_list">
-      <a-form ref="formRef" :model="form" @submit="submit">
-        <a-row class="grid-demo" :gutter="{ md: 8, lg: 24, xl: 32 }">
-          <a-col :span="4">
-            <a-form-item field="busno" label="年份">
-              <a-year-picker v-model="form.year" style="width: 100%;" />
-            </a-form-item>
-          </a-col>
-          <a-col :span="6">
-            <a-form-item field="busno" label="门店">
-              <a-cascader style="width: 100%;" v-model="form.all" @change="change" :field-names="fieldNames" allow-search
-                :options="options" placeholder="请选择" />
-            </a-form-item>
-          </a-col>
-          <a-col :span="14" style="text-align: right;">
-            <div class="a-btn">
-              <a-space>
-                <a-button long html-type="submit" type="primary">查询</a-button>
-              </a-space>
-            </div>
-          </a-col>
-        </a-row>
-      </a-form>
+      <div class="flex fw ac js">
+        <div class="item-form flex ac js">
+          <span>年份: </span>
+          <a-year-picker :allow-clear="false" v-model="form.year" style="width: 100px;" />
+        </div>
+        <div class="item-form flex ac js">
+          <span>门店: </span>
+          <a-cascader style="width: 260px;" v-model="form.all" @change="change" :field-names="fieldNames" allow-search
+            :options="options" placeholder="请选择" />
+        </div>
+      </div>
+      <div class="a-btn">
+        <a-button long html-type="getListsData" @click="submit" type="primary">查询</a-button>
+      </div>
     </div>
     <div class="list_content">
-      
-      <a-table :loading="loading"  :columns="columns" :data="data" column-resizable :virtual-list-props="tableHeight"
-        :pagination="false"  @change="handleChange" :draggable="{}" />
-        <!-- <a-spin loading v-show="loading" style="left:50%" />-->
+
+      <a-table v-show="isSShow" :loading="loading" :columns="columns" :data="data" column-resizable
+        :virtual-list-props="tableHeight" :pagination="false" @change="handleChange" :draggable="{}" />
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, onBeforeUnmount, reactive, ref } from 'vue';
 import { useStore } from "vuex";
 import { db } from "@/api/index";
 import dayjs from 'dayjs'
+import axios from 'axios'
 let store = useStore()
 const loading = ref(false)
 let count = ref(0)
+const isSShow = ref(false)
+const cancecalSoure = axios.CancelToken.source() //取消请求
 const form = reactive({
   year: dayjs().format('YYYY'),
   all: '全部',
@@ -55,16 +49,16 @@ const options = ref<any>([])
 // 表头名 参数字段
 const columns = reactive<any>([
   {
-    title: '名称', dataIndex: 'name',width: 200,
+    title: '名称', dataIndex: 'name', width: 200,
     sortable: { sortDirections: ['ascend', 'descend'] }
   },
   {
     title: '一月', dataIndex: 'months1',
     sortable: { sortDirections: ['ascend', 'descend'] },
-    bodyCellClass:(record:any)=>{	
-      if(record.name == '日均毛利额达成率'){
-        let className = record.months1 >100 ? 'rise': 'decline';
-         return className
+    bodyCellClass: (record: any) => {
+      if (record.name == '日均毛利额达成率') {
+        let className = record.months1 > 100 ? 'rise' : 'decline';
+        return className
       }
     }
   },
@@ -106,7 +100,7 @@ const columns = reactive<any>([
 ])
 // 数据
 let data = ref<any>([])
-  const handleChange = (_data: any) => {
+const handleChange = (_data: any) => {
   data = _data
 }
 //获取门店数据
@@ -150,9 +144,10 @@ const change = (val: any) => {
 
 }
 // 获取列表数据
+const num = ref(1)
 const getListsData = () => {
-  console.log(count.value, 'count')
   if (count.value == 0) loading.value = true
+  console.log(count.value)
   db({
     gnbh: "pc_hqnsjzx",
     dzyid: store.state.user?.userinfor?.dzyid,
@@ -163,25 +158,22 @@ const getListsData = () => {
     orgname: form.orgname,
     busno: form.busno,
     type: count.value
-  }).then(res => {
-    let datas = res.data
-       for(let j in datas){
-          if(j !=='name') {
-            let num = parseFloat(datas[j])
-            datas[j] = num
-          }
-     }
-    data.value.push(datas)
+  }).then((res: any) => {
     if (count.value < 43) {
       count.value = count.value + 1
       getListsData()
     }
+    if (res.code == '-1') return
+    let datas = res.data
+    data.value.push(datas)
+
   }).finally(() => {
     if (count.value == 1) loading.value = false
   })
 }
 // }
 const submit = () => {
+  isSShow.value = true
   data.value = []
   count.value = 0
   getListsData()
@@ -189,30 +181,48 @@ const submit = () => {
 onMounted(() => {
   tableHeight.height = window.innerHeight - 370
   getMDData()
-  getListsData()
+  // getListsData()
+})
+onBeforeUnmount(() => {
+  // 销毁接口请求
+  window._axiosPromiseArr.forEach((ele: any, index: any) => {
+    ele.cancel()
+    delete window._axiosPromiseArr[index]
+  })
+
 })
 </script>
 <style lang="less" scoped>
 @import './day_month.less';
-:deep(.rise ){
+
+:deep(.rise) {
   color: green;
 }
 
 :deep(.decline) {
   color: red;
 }
-.search_list {
-    :deep(.arco-form-item-label-col) {
-        // justify-content: flex-start;
-        width: 100%;
-        flex: 0 0 60px;
-    }
 
-    :deep(.arco-form-item-wrapper-col) {
-        width: 100%;
-        flex: 0 0 calc(100% - 60px);
+.search_list {
+  padding: 20px;
+  position: relative;
+
+  .a-btn {
+    width: 100px;
+    position: absolute;
+    right: 20px;
+    bottom: 40px;
+  }
+
+  .item-form {
+    margin: 0 20px 20px 0;
+
+    span {
+      margin-right: 10px;
     }
+  }
 }
+
 .list_content {
   padding: 0 20px 20px 20px;
 }

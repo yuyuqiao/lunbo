@@ -7,41 +7,42 @@ import store from '../store'
 // const store = useStore()
 NProgress.configure({ showSpinner: false })
 const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-        {
-            path: '/',
-            redirect: 'login',
-        },
-        {
-            path: '/login',
-            name: 'login',
-            component: () => import('../views/login/index.vue'),
-            meta: {
-                requireAuth: false
-            }
-        },
-        // 循环展示页面
-        ...appRoutes
-    ]
+  history: createWebHistory(),
+  routes: [
+    {
+      path: '/',
+      redirect: 'login',
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/login/index.vue'),
+      meta: {
+        requireAuth: false
+      }
+    },
+    // 循环展示页面
+    ...appRoutes
+  ]
 })
 router.beforeEach((to, from, next) => {
-    NProgress.start()
-    setRouteEmitter(to)
-    let token = sessionStorage.getItem('token')
-    if (token) {
-      if (to.path === '/login') {
-        next('/')
-      } else {
-        next()
-      }
+ 
+  NProgress.start()
+  setRouteEmitter(to)
+  let token = sessionStorage.getItem('token')
+  if (token) {
+    if (to.path === '/login') {
+      next('/')
     } else {
-        if(to.path === '/login') next()
-          else next('/login')
+      next()
     }
-  })
+  } else {
+    if (to.path === '/login') next()
+    else next('/login')
+  }
+})
 router.afterEach((to, from, next) => {
-    // 关闭进度条
-    NProgress.done()
+  // 关闭进度条
+  NProgress.done()
 })
 export default router;

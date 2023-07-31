@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit --skipLibCheck && vite build",
+    "test": "vue-tsc --noEmit --skipLibCheck && vite build --mode development",
+    "build": "vue-tsc --noEmit --skipLibCheck && vite build --mode production",
     "preview": "vite preview"
   },
   "dependencies": {

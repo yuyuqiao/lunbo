@@ -2,48 +2,37 @@
 <template>
     <div class="content_day">
         <div class="search_list">
-            <a-form ref="formRef" :model="form" @submit="getListsData">
-                <a-row class="grid-demo" :gutter="{ md: 8, lg: 24, xl: 32 }">
-                    <a-col :span="4">
-                        <a-form-item field="busno" label="开始日期">
-                            <a-date-picker v-model="form.startTime" format="YYYY-MM-DD" style="width: 100%;" />
-                        </a-form-item>
-                    </a-col>
-                    <a-col :span="4">
-                        <a-form-item field="busno" label="结束日期">
-                            <a-date-picker v-model="form.endTIme" format="YYYY-MM-DD" style="width: 100%;" />
-                        </a-form-item>
-                    </a-col>
-                    <a-col :span="4">
-                        <a-form-item field="date" label="同比开始日期">
-                            <a-date-picker v-model="form.tbstartTime" format="YYYY-MM-DD" style="width: 100%;" />
-                        </a-form-item>
-                    </a-col>
-                    <a-col :span="4">
-                        <a-form-item field="date" label="同比结束日期">
-                            <a-date-picker v-model="form.tbendTIme" format="YYYY-MM-DD" style="width: 100%;" />
-                        </a-form-item>
-                    </a-col>
-                    <a-col :span="6">
-                        <a-form-item field="all" class="separate" label="门店">
-                            <a-cascader style="width: 100%;" v-model="form.all" @change="change" :field-names="fieldNames"
-                                allow-search :options="options" placeholder="请选择" />
-                        </a-form-item>
-                    </a-col>
-
-                    <a-col :span="2" style="text-align: right;">
-                        <div class="a-btn">
-                            <a-space>
-                                <a-button long html-type="getListsData" type="primary">查询</a-button>
-                            </a-space>
-                        </div>
-                    </a-col>
-                </a-row>
-            </a-form>
+            <div class="flex fw ac js">
+                <div class="item-form flex ac js">
+                    <span>开始日期: </span>
+                    <a-date-picker :allow-clear="false" v-model="form.startTime" format="YYYY-MM-DD" style="width: 130px" />
+                </div>
+                <div class="item-form flex ac js">
+                    <span>结束日期: </span>
+                    <a-date-picker :allow-clear="false" v-model="form.endTIme" format="YYYY-MM-DD" style="width: 130px" />
+                </div>
+                <div class="item-form flex ac js">
+                    <span>同比开始日期: </span>
+                    <a-date-picker :allow-clear="false" v-model="form.tbstartTime" format="YYYY-MM-DD"
+                        style="width: 130px" />
+                </div>
+                <div class="item-form flex ac js">
+                    <span>同比结束日期: </span>
+                    <a-date-picker :allow-clear="false" v-model="form.tbendTIme" format="YYYY-MM-DD" style="width: 130px" />
+                </div>
+                <div class="item-form flex ac js">
+                    <span>门店: </span>
+                    <a-cascader style="width: 260px;" v-model="form.all" @change="change" :field-names="fieldNames"
+                        allow-search :options="options" placeholder="请选择" />
+                </div>
+            </div>
+            <div class="a-btn">
+                <a-button long html-type="getListsData" @click="getListsData" type="primary">查询</a-button>
+            </div>
         </div>
         <div class="list_content">
             <a-spin loading v-show="loading" style="left:50%" />
-            <div v-show="!loading" style="margin-top: 20px;">
+            <div v-show="!loading&&isSShow" style="margin-top: 20px;">
                 <MgShowData :data="data">
                     <template v-slot:two='user'>
                         <div class="tip">
@@ -64,6 +53,7 @@ import dayjs from 'dayjs'
 import { Message } from '@arco-design/web-vue'
 import MgShowData from '@/components/show-data.vue'
 let store = useStore()
+const isSShow = ref(false)
 const form = reactive<any>({
     busno: '',
     startTime: dayjs().format('YYYY-MM-DD'),
@@ -107,7 +97,7 @@ const data = reactive([{
 },
 
 {
-    key: 'ypdkeliu_zb', title: '一品单客流占比', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
+    key: 'ypdkeliu_zb', title: '一品单客流占比', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: false
 },
 ])
 // 获取门店数据
@@ -140,6 +130,7 @@ const getMDData = () => {
 }
 // 获取列表数据
 const getListsData = () => {
+    isSShow.value = true
     if (dayjs(form.startTime) > dayjs(form.endTIme)) {
         Message.warning('开始时间不能大于结束时间')
         return
@@ -224,21 +215,29 @@ const reset = () => {
 }
 onMounted(() => {
     getMDData()
-    getListsData()
+    // getListsData()
 })
 </script>
 <style lang="less" scoped>
 @import './day_month.less';
-.search_list .separate{
-    :deep(.arco-form-item-label-col) {
-        // justify-content: flex-start;
-        width: 100%;
-        flex: 0 0 60px;
+
+.search_list {
+    padding: 20px;
+    position: relative;
+
+    .a-btn {
+        width: 100px;
+        position: absolute;
+        right: 20px;
+        bottom: 40px;
     }
 
-    :deep(.arco-form-item-wrapper-col) {
-        width: 100%;
-        flex: 0 0 calc(100% - 60px);
+    .item-form {
+        margin: 0 20px 20px 0;
+        
+        span {
+            margin-right: 10px;
+        }
     }
 }
 </style>

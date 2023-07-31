@@ -3,34 +3,25 @@
     <!--  -->
     <div class="content_day">
         <div class="search_list">
-            <a-form ref="formRef" :model="form" @submit="getAllToker">
-                <a-row class="grid-demo" :gutter="{ md: 8, lg: 24, xl: 32 }">
-                    <a-col :span="4">
-                        <a-form-item field="busno" label="月份">
-                            <a-month-picker style="width: 100%;" :defaultValue="defaultMoonth" placeholder="请选择月份"
-                                v-model="form.month" />
-                        </a-form-item>
-                    </a-col>
-                    <a-col :span="6">
-                        <a-form-item field="busno" label="门店">
-                            <a-cascader style="width: 100%;" v-model="form.all" @change="change" :field-names="fieldNames"
-                                allow-search :options="options" placeholder="请选择" />
-                        </a-form-item>
-                    </a-col>
-
-                    <a-col :span="14" style="text-align: right;">
-                        <div class="a-btn">
-                            <a-space>
-                                <a-button long html-type="getAllToker" type="primary">查询</a-button>
-                            </a-space>
-                        </div>
-                    </a-col>
-                </a-row>
-            </a-form>
+            <div class="flex fw ac js">
+                <div class="item-form flex ac js">
+                    <span>月份: </span>
+                    <a-month-picker :allow-clear="false" style="width: 120px;" :defaultValue="defaultMoonth"
+                        placeholder="请选择月份" v-model="form.month" />
+                </div>
+                <div class="item-form flex ac js">
+                    <span>门店: </span>
+                    <a-cascader style="width: 260px;" v-model="form.all" @change="change" :field-names="fieldNames"
+                        allow-search :options="options" placeholder="请选择" />
+                </div>
+            </div>
+            <div class="a-btn">
+                <a-button long html-type="getListsData" @click="getAllToker" type="primary">查询</a-button>
+            </div>
         </div>
         <div class="list_content">
             <a-spin loading v-show="loading" style="left:50%" />
-            <div v-show="!loading">
+            <div v-show="!loading && isSShow">
                 <MgShowData :data="data">
                     <template v-slot:two='user'>
                         <div class="tip">
@@ -50,6 +41,7 @@ import { db } from "@/api/index";
 import dayjs from 'dayjs'
 import MgShowData from '@/components/show-data.vue'
 let store = useStore()
+const isSShow = ref(false)
 const form = reactive<any>({
     busno: '',
     orgname: '',
@@ -65,26 +57,15 @@ const options = ref<any>([])
 const data = reactive(
     [
         {
-            key: 'zongxse', title: '总销售额', isPercent: false, number: '', isHundred: true, practice1: '', practice2: '', isShow: true
-        }, {
-            key: 'grkeliu', title: '个人交易笔数', isPercent: false, number: '', isHundred: false, practice1: '', practice2: '', isShow: true
-        }, {
             key: 'yxxse', title: '营销销售额', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
-        }, {
-            key: 'bjpxse', title: '保健品售额', isPercent: false, number: '', isHundred: false,  isShow: true
-        }, {
-            key: 'zyypxse', title: '中药饮片售额', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
-        }, {
-            key: 'yszyxse', title: '中药养生售额', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
         }, {
             key: 'puyaoxse', title: '普药销售额', isPercent: false, number: '', isHundred: false, practice1: '', practice2: '', isShow: true
         }, {
-            key: 'ypdkeliu', title: '一品单交易数', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
-        }, {
             key: 'hgxse', title: '换购销售额', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
-
         }, {
             key: 'hgkeliu', title: '换购交易笔数', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
+        }, {
+            key: 'ypdkeliu', title: '一品单交易数', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
         }, {
             key: 'shl_vip', title: '门店拓客总数量', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
         }, {
@@ -92,10 +73,20 @@ const data = reactive(
         }, {
             key: 'zonghyfugourenshu', title: '总会员复购人数', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
         }, {
+            key: 'zonghyxse', title: '总会员销售额', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
+        }, {
             key: 'zonghykedan', title: '总会员客单价', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
         }, {
-            key: 'zonghyxse', title: '总会员销售额', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
-        }
+            key: 'zongxse', title: '总销售额', isPercent: false, number: '', isHundred: true, practice1: '', practice2: '', isShow: false
+        }, {
+            key: 'grkeliu', title: '个人交易笔数', isPercent: false, number: '', isHundred: false, practice1: '', practice2: '', isShow: false
+        }, {
+            key: 'bjpxse', title: '保健品售额', isPercent: false, number: '', isHundred: false, isShow: false
+        }, {
+            key: 'zyypxse', title: '中药饮片售额', isPercent: false, number: '', isHundred: false, practice1: '', isShow: false
+        }, {
+            key: 'yszyxse', title: '中药养生售额', isPercent: false, number: '', isHundred: false, practice1: '', isShow: false
+        },
     ])
 // 获取门店数据
 const getMDData = () => {
@@ -150,6 +141,7 @@ const getAllToker = () => {
     // getTokerData('get.org.huiyuantuoke', data)
 }
 const getTokerData = (gnbh: any, list: any) => {
+    isSShow.value = true
     reset()
     loading.value = true
     db({
@@ -163,7 +155,7 @@ const getTokerData = (gnbh: any, list: any) => {
         busno: form.busno,
         leibie: form.leibie
     }).then(res => {
-        let datas = res.data?res.data[0]:{}
+        let datas = res.data ? res.data[0] : {}
         for (let i in datas) {
             list.forEach((n: any) => {
                 if (n.key == i) {
@@ -198,40 +190,48 @@ const getTokerData = (gnbh: any, list: any) => {
                         n.practice1 = datas.puyaoxse_zb ? `占比：${datas.puyaoxse_zb}%` : '--'
                         n.practice2 = datas.puyaokeliu ? `交易笔数：${datas.puyaokeliu}` : '--'
                     }
-                    if(n.key == 'zonghyxse')  n.practice1 = datas.zonghyxse_zb ? `占比：${datas.zonghyxse_zb}%` : '--'
+                    if (n.key == 'zonghyxse') n.practice1 = datas.zonghyxse_zb ? `占比：${datas.zonghyxse_zb}%` : '--'
                     n.number = datas[i]
                 }
             });
         }
-    }).finally(()=>{
+    }).finally(() => {
         loading.value = false
     })
 }
 // 重置信息
 const reset = () => {
-    data.forEach((n: any) =>{
+    data.forEach((n: any) => {
         n.number = ''
         n.practice1 = ''
-        n.practice2= ''
+        n.practice2 = ''
     })
 }
 onMounted(() => {
     getMDData()
-    getAllToker()
+    // getAllToker()
 })
 </script>
 <style lang="less" scoped>
 @import './day_month.less';
+
 .search_list {
-    :deep(.arco-form-item-label-col) {
-        // justify-content: flex-start;
-        width: 100%;
-        flex: 0 0 60px;
+    padding: 20px;
+    position: relative;
+
+    .a-btn {
+        width: 100px;
+        position: absolute;
+        right: 20px;
+        bottom: 40px;
     }
 
-    :deep(.arco-form-item-wrapper-col) {
-        width: 100%;
-        flex: 0 0 calc(100% - 60px);
+    .item-form {
+        margin: 0 20px 20px 0;
+
+        span {
+            margin-right: 10px;
+        }
     }
 }
 </style>

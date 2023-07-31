@@ -8,10 +8,10 @@
                     ?
                     '-' : item.number
                 }}</span>
-                <div class="tip_number" v-show="item.isShow">
-                    <slot name="two" :user='item'></slot>
-                </div>
-               
+            <div class="tip_number" v-show="item.isShow">
+                <slot name="two" :user='item'></slot>
+            </div>
+
             <a-divider />
         </div>
     </div>
@@ -32,12 +32,14 @@ const props = defineProps({
 .decline {
     color: red;
 }
+
 .tip_number {
     height: 50px;
     line-height: 20px;
     margin: 10px 0 0 10px;
     font-size: 14px;
 }
+
 .item-flex {
     width: calc(calc(100% - 200px) / 5);
     // min-width: 300px;
@@ -48,7 +50,7 @@ const props = defineProps({
 
     span {
         display: inline-block;
-        margin: 10px 0 0 10px;
+        margin: 10px 0 0 0px;
         font-size: 26px;
         font-weight: bolder;
     }
@@ -57,6 +59,9 @@ const props = defineProps({
         margin-top: 5px;
     }
 }
+
 @media (max-width: 1380px) {
-}
-</style>
+    .item-flex {
+        width: calc(calc(100% - 160px) / 4);
+    }
+}</style>
