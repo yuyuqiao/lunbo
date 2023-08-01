@@ -52,35 +52,35 @@ const loading = ref(false)
 const data = reactive(
     [
         {
-            key: 'yxxse', title: '营销销售额', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
+            key: 'yxxse', title: '营销销售额', isPercent: false, number: '', isHundred: false, practice1: ''
         }, {
-            key: 'puyaoxse', title: '普药销售额', isPercent: false, number: '', isHundred: false, practice1: '', practice2: '', isShow: true
+            key: 'puyaoxse', title: '普药销售额', isPercent: false, number: '', isHundred: false, practice1: '', practice2: ''
         }, {
-            key: 'hgxse', title: '换购销售额', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
+            key: 'hgxse', title: '换购销售额', isPercent: false, number: '', isHundred: false, practice1: ''
         }, {
-            key: 'hgkeliu', title: '换购交易笔数', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
+            key: 'hgkeliu', title: '换购交易笔数', isPercent: false, number: '', isHundred: false, practice1: ''
         }, {
-            key: 'ypdkeliu', title: '一品单交易数', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
+            key: 'ypdkeliu', title: '一品单交易数', isPercent: false, number: '', isHundred: false, practice1: ''
         }, {
-            key: 'shl_vip', title: '门店拓客总数量', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
+            key: 'shl_vip', title: '门店拓客总数量', isPercent: false, number: '', isHundred: false, practice1: ''
         }, {
-            key: 'zongkeliu', title: '总来客数', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
+            key: 'zongkeliu', title: '总来客数', isPercent: false, number: '', isHundred: false, practice1: ''
         }, {
-            key: 'zonghyfugourenshu', title: '总会员复购人数', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
+            key: 'zonghyfugourenshu', title: '总会员复购人数', isPercent: false, number: '', isHundred: false, practice1: ''
         }, {
-            key: 'zonghyxse', title: '总会员销售额', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
+            key: 'zonghyxse', title: '总会员销售额', isPercent: false, number: '', isHundred: false, practice1: ''
         }, {
-            key: 'zonghykedan', title: '总会员客单价', isPercent: false, number: '', isHundred: false, practice1: '', isShow: true
+            key: 'zonghykedan', title: '总会员客单价', isPercent: false, number: '', isHundred: false, practice1: ''
         }, {
-            key: 'zongxse', title: '总销售额', isPercent: false, number: '', isHundred: true, practice1: '', practice2: '', isShow: false
+            key: 'zongxse', title: '总销售额', isPercent: false, number: '', isHundred: true, practice1: '', practice2: ''
         }, {
-            key: 'grkeliu', title: '个人交易笔数', isPercent: false, number: '', isHundred: false, practice1: '', practice2: '', isShow: false
+            key: 'grkeliu', title: '个人交易笔数', isPercent: false, number: '', isHundred: false, practice1: '', practice2: ''
         }, {
-            key: 'bjpxse', title: '保健品售额', isPercent: false, number: '', isHundred: false, isShow: false
+            key: 'bjpxse', title: '保健品售额', isPercent: false, number: '', isHundred: false
         }, {
-            key: 'zyypxse', title: '中药饮片售额', isPercent: false, number: '', isHundred: false, practice1: '', isShow: false
+            key: 'zyypxse', title: '中药饮片售额', isPercent: false, number: '', isHundred: false, practice1: ''
         }, {
-            key: 'yszyxse', title: '中药养生售额', isPercent: false, number: '', isHundred: false, practice1: '', isShow: false
+            key: 'yszyxse', title: '中药养生售额', isPercent: false, number: '', isHundred: false, practice1: ''
         },
     ])
 // 获取拓客信息

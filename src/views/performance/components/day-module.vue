@@ -68,36 +68,36 @@ const fieldNames = { value: 'busno', label: 'orgname' }
 const options = ref<any>([])
 // 定义接收字段
 const data = reactive([{
-    key: 'ml_dcl', title: '日清毛利额达成率(考核)', isPercent: true, number: '', isHundred: true, practice1: '', practice2: '', isShow: true
+    key: 'ml_dcl', title: '日清毛利额达成率(考核)', isPercent: true, number: '', isHundred: true, practice1: '', practice2: ''
 },
 {
-    key: 'ml', title: '毛利额', isPercent: false, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
+    key: 'ml', title: '毛利额', isPercent: false, number: '', isHundred: false, shouTipData: '', practice1: ''
 },
 {
-    key: 'keliu', title: '当天客流', isPercent: false, number: '', isHundred: false, isShow: true
+    key: 'keliu', title: '当天客流', isPercent: false, number: '', isHundred: false
 }, {
-    key: 'kedan', title: '当天客单', isPercent: false, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
+    key: 'kedan', title: '当天客单', isPercent: false, number: '', isHundred: false, shouTipData: '', practice1: ''
 }, {
-    key: 'cxrkedan', title: '促销日客单价', isPercent: false, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
+    key: 'cxrkedan', title: '促销日客单价', isPercent: false, number: '', isHundred: false, shouTipData: '', practice1: ''
 }, {
-    key: 'sshje_dcl', title: '日清销售额达成率(考核)', isPercent: true, number: '', isHundred: true, shouTipData: 'ssjh', practice1: '', practice2: '', isShow: true
+    key: 'sshje_dcl', title: '日清销售额达成率(考核)', isPercent: true, number: '', isHundred: true, shouTipData: 'ssjh', practice1: '', practice2: ''
 },
 {
-    key: 'xse', title: '销售额', isPercent: false, number: '', isHundred: false, shouTipData: '', isShow: true
+    key: 'xse', title: '销售额', isPercent: false, number: '', isHundred: false, shouTipData: ''
 },
 
 {
-    key: 'mll', title: '毛利率', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
+    key: 'mll', title: '毛利率', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: ''
 },
 {
-    key: 'yxpz_mll', title: '营销品种毛利率', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
+    key: 'yxpz_mll', title: '营销品种毛利率', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: ''
 },
 {
-    key: 'puyao_mll', title: '普药毛利率', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: true
+    key: 'puyao_mll', title: '普药毛利率', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: ''
 },
 
 {
-    key: 'ypdkeliu_zb', title: '一品单客流占比', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: '', isShow: false
+    key: 'ypdkeliu_zb', title: '一品单客流占比', isPercent: true, number: '', isHundred: false, shouTipData: '', practice1: ''
 },
 ])
 // 获取门店数据
@@ -184,7 +184,7 @@ const getListsData = () => {
                     if (n.key === 'yxpz_mll')
                         n.practice1 = datas.yxpzsshje_zb ? `占比：${datas.yxpzsshje_zb}` : '--'
                     if (n.key === 'cxrkedan') n.practice1 = datas.cxrkedantb ? `同比：${datas.cxrkedantb}` : '--'
-                    if (n.key == 'puyao_mll') n.practice1 = datas.tbpuyao_mll ? `同比：${datas.tbpuyao_mll}` : '--'
+                    // if (n.key == 'puyao_mll') n.practice1 = datas.tbpuyao_mll ? `同比：${datas.tbpuyao_mll}` : '--'
                     n.number = datas[i]
                 }
             });

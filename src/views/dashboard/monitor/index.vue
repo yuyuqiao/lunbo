@@ -24,7 +24,9 @@
         </a-table></a-space>
 
       <div ref="main" style="width: 100%; height: 400px"></div>
+       <BarGraph />
     </div>
+   
     <!-- 新增删除 -->
     <AddModel :isShowAddOrEdit="isShowAddOrEdit" :form="formInfor" :type="type" @close="close" @addOrEdit="submitInfor" />
   </div>
@@ -35,7 +37,7 @@ import { reactive, ref, onMounted } from 'vue'
 import SearchModel from "./components/search-model.vue"
 import AddModel from "./components/add-model.vue"
 import { number } from 'echarts';
-import BarGraph from "./barGraph.vue";
+import BarGraph from "./components/barGraph.vue";
 const isShowAddOrEdit = ref<boolean | undefined>(false)
 const formInfor = ref<object | undefined>()
 const type = ref()
@@ -150,7 +152,7 @@ onMounted(() => {
 })
 // 图表初始化
 
-function init() {
+const init = ()=> {
   // 基于准备好的dom，初始化echarts实例
   const myChart = echarts.init(main.value);
   const schoolData = [

@@ -89,8 +89,6 @@ const handleSubmit = ({
             gnbh: 'login', dzyid: userInfor.username, pwd: userInfor.password
         }
         db(query).then(res => {
-            console.log(res, 'login')
-
             sessionStorage.setItem('token', res.data[0]?.token)
             store.commit('user/setUser', res.data[0])
             setTimeout(() => {

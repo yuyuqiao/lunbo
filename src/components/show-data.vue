@@ -8,7 +8,7 @@
                     ?
                     '-' : item.number
                 }}</span>
-            <div class="tip_number" v-show="item.isShow">
+            <div class="tip_number" v-show="!item.isShow">
                 <slot name="two" :user='item'></slot>
             </div>
 
@@ -41,9 +41,7 @@ const props = defineProps({
 }
 
 .item-flex {
-    width: calc(calc(100% - 200px) / 5);
-    // min-width: 300px;
-    // height: 100px;
+    width: 272px;
     font-size: 18px;
     padding: 0 20px;
     margin-bottom: 10px;
@@ -58,6 +56,13 @@ const props = defineProps({
     :deep(.arco-divider-horizontal) {
         margin-top: 5px;
     }
+}
+
+@media (max-width: 1920px) {
+    .item-flex {
+        width: calc(calc(100% - 200px) / 5);
+    }
+   
 }
 
 @media (max-width: 1380px) {
